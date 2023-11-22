@@ -4,18 +4,21 @@ from rest_framework.viewsets import ViewSet
 
 from account.models import User
 from api.account.serializers import UserSerializer
+from services.account_services import AccountService
 
 
 class UserViewSet(ViewSet):
-    def create(self, request):
+    def create(self, request) -> Response:
         return self._sign_up(request)
 
-    def _sign_up(self, request):
+    def _sign_up(self, request) -> Response:
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = User.objects.create_user(username=serializer.validated_data['username'],
-                                        email=serializer.validated_data['email'],
-                                        password=serializer.validated_data['password'])
+        user: User = AccountService.create_user(
+            username=serializer.validated_data['username'],
+            email=serializer.validated_data['email'],
+            password=serializer.validated_data['password']
+        )
 
         return Response(data=UserSerializer(user).data, status=status.HTTP_201_CREATED)
