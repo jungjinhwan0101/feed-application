@@ -38,13 +38,16 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-LOCAL_APPS = [
+LIBRARY_APPS = [
     "rest_framework",
-    "account",
-    "api",
 ]
 
-INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
+LOCAL_APPS = [
+    "apps.account",
+    "apps.api",
+]
+
+INSTALLED_APPS = DJANGO_APPS + LIBRARY_APPS + LOCAL_APPS
 
 AUTH_USER_MODEL = "account.User"
 

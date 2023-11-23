@@ -1,4 +1,4 @@
-from account.models import User
+from apps.account.models import User
 
 
 class AccountService:

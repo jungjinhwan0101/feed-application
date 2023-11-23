@@ -2,9 +2,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from account.models import User
-from api.account.serializers import UserSerializer
-from services.account_services import AccountService
+from apps.account.models import User
+from apps.api.account.serializers import UserSerializer
+from apps.account.services import AccountService
 
 
 class UserViewSet(ViewSet):
