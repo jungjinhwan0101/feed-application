@@ -16,9 +16,9 @@ class UserViewSet(ViewSet):
         serializer.is_valid(raise_exception=True)
 
         user: User = AccountService.create_user(
-            username=serializer.validated_data['username'],
-            email=serializer.validated_data['email'],
-            password=serializer.validated_data['password']
+            username=serializer.validated_data["username"],
+            email=serializer.validated_data["email"],
+            password=serializer.validated_data["password"],
         )
 
         return Response(data=UserSerializer(user).data, status=status.HTTP_201_CREATED)

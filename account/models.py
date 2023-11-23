@@ -6,5 +6,5 @@ class User(AbstractUser):
     class Meta:
         db_table = "user"
         constraints = [
-            models.UniqueConstraint(fields=['email'], name='email_unique'),
+            models.UniqueConstraint(fields=["email"], name="email_unique"),
         ]
