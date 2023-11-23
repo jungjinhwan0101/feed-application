@@ -11,6 +11,8 @@ class User(AbstractUser):
 
 
 class UserConfirmCode(models.Model):
-    user = models.OneToOneField('account.User', on_delete=models.CASCADE)
-    confirm_code = models.CharField(max_length=6, help_text='가입 승인 코드')
+    user = models.OneToOneField(
+        "account.User", related_name="confirm_code", on_delete=models.CASCADE
+    )
+    code = models.CharField(max_length=6, help_text="가입 승인 코드")
     expired_at = models.DateTimeField()
