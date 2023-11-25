@@ -11,13 +11,10 @@ from apps.account.services import AccountService
 class UserViewSet(ViewSet):
     # POST /api/users
     def create(self, request) -> Response:
-        return self._sign_up(request)
-
-    def _sign_up(self, request) -> Response:
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user: User = AccountService.create_user(
+        user: User = AccountService.signup(
             username=serializer.validated_data["username"],
             email=serializer.validated_data["email"],
             password=serializer.validated_data["password"],

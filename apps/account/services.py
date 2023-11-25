@@ -12,14 +12,14 @@ class AccountService:
 
     @classmethod
     @transaction.atomic
-    def create_user(cls, username: str, password: str, email: str) -> User:
+    def signup(cls, username: str, password: str, email: str) -> User:
         user = User.objects.create_user(
             username=username, email=email, password=password, is_active=False
         )
 
         cls._set_confirm_code(user)
 
-        cls._send_confirm_code_email(user)
+        cls._send_email_confirm_code(user)
 
         return user
 
@@ -34,5 +34,5 @@ class AccountService:
         )
 
     @classmethod
-    def _send_confirm_code_email(cls, user: User):
+    def _send_email_confirm_code(cls, user: User):
         print(f"Email 발송 : {user.confirm_code.code}")
