@@ -14,7 +14,7 @@ class TestAccountService(TestCase):
         self.email = "jj@gmail.com"
 
     def test_create_user(self):
-        user: User = AccountService.create_user(
+        user: User = AccountService.signup(
             username=self.username, password=self.password, email=self.email
         )
 

@@ -11,6 +11,8 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+from config.env import DEPLOY_LEVEL
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"config.settings.{DEPLOY_LEVEL}")
 
 application = get_asgi_application()

@@ -9,15 +9,17 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
 import json
 from pathlib import Path
-
+from config.env import DEPLOY_LEVEL
 from django.core.exceptions import ImproperlyConfigured
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRETS_JSON_PATH = BASE_DIR / 'secrets.json'
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+SECRETS_JSON_PATH = BASE_DIR / f'secrets_{DEPLOY_LEVEL}.json'
 
 with open(SECRETS_JSON_PATH, 'r') as f:
     secrets = json.load(f)
@@ -25,7 +27,7 @@ with open(SECRETS_JSON_PATH, 'r') as f:
 
 def get_secrets(key: str):
     try:
-        secrets[key]
+        return secrets[key]
     except KeyError:
         raise ImproperlyConfigured(f'Set the "{key}" environment variable')
 
