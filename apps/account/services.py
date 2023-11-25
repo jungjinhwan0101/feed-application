@@ -5,6 +5,7 @@ from django.utils.timezone import now
 
 from apps.account.models import User, UserConfirmCode
 from apps.account.utils import generate_confirm_code
+from apps.core.email_utils import send_email
 
 
 class AccountService:
@@ -17,11 +18,14 @@ class AccountService:
             username=username, email=email, password=password, is_active=False
         )
 
-        cls._set_confirm_code(user)
-
-        cls._send_email_confirm_code(user)
+        cls.publish_confirm_code(user)
 
         return user
+
+    @classmethod
+    def publish_confirm_code(cls, user: User):
+        cls._set_confirm_code(user)
+        cls._send_email_confirm_code(user)
 
     @classmethod
     def _set_confirm_code(cls, user: User):
@@ -35,4 +39,10 @@ class AccountService:
 
     @classmethod
     def _send_email_confirm_code(cls, user: User):
-        print(f"Email 발송 : {user.confirm_code.code}")
+        send_email(
+            subject='[SNS 피드 서비스] 회원가입 인증코드',
+            message=f'인증코드 : {user.confirm_code.code}',
+            recipient_email=user.email
+        )
+
+

@@ -29,3 +29,14 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("숫자로만 이루워진 패스워드는 사용할 수 없습니다.")
 
         return password
+
+
+class SignupApproveInputSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+    confirm_code = serializers.CharField()
+
+
+class RefreshConfirmCodeInputSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
