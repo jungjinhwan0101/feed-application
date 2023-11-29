@@ -4,6 +4,13 @@ from apps.account.models import User
 from django.test.client import Client
 
 
+@pytest.fixture(scope="function")
+def authorized_client(client: Client) -> Client:
+    user = User.objects.create_user(username='username', password='password', is_active=True)
+    client.force_login(user)
+    return client
+
+
 @pytest.mark.django_db
 def test_create_user_view(client: Client):
     """
@@ -45,10 +52,10 @@ def test_login_active_user(client: Client):
 
 @pytest.mark.django_db
 def test_login_inactive_user(client: Client):
-    active_user = User.objects.create_user(username='username', password='password', is_active=False)
+    inactive_user = User.objects.create_user(username='username', password='password', is_active=False)
 
     payload = {
-        "username": active_user.username,
+        "username": inactive_user.username,
         "password": "password",
     }
 
@@ -57,3 +64,9 @@ def test_login_inactive_user(client: Client):
     assert response.status_code == 400
     assert 'sessionid' not in response.cookies
 
+
+@pytest.mark.django_db
+def test_logout(authorized_client: Client):
+    response = authorized_client.post("/api/users/logout")
+
+    assert response.status_code == 200

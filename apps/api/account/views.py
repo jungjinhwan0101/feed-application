@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -15,6 +15,7 @@ class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
 
     # POST /api/users
+    # 회원가입
     def create(self, request) -> Response:
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -28,6 +29,7 @@ class UserViewSet(ModelViewSet):
         return Response(data=UserSerializer(user).data, status=status.HTTP_201_CREATED)
 
     # POST /api/users/signup-approve
+    # 가입승인
     @action(methods=["POST"], detail=False, url_path="signup-approve")
     def approve(self, request):
         input_serializer = SignupApproveInputSerializer(data=request.data)
@@ -56,6 +58,7 @@ class UserViewSet(ModelViewSet):
         return Response(status=status.HTTP_200_OK)
 
     # POST /api/users/refresh-confirm-code
+    # 승인코드 재발급
     @action(methods=["POST"], detail=False, url_path="refresh-confirm-code")
     def refresh_confirm_code(self, request, pk):
         input_serializer = RefreshConfirmCodeInputSerializer(data=request.data)
@@ -77,6 +80,7 @@ class UserViewSet(ModelViewSet):
         return Response(status=status.HTTP_200_OK)
 
     # POST /api/users/login
+    # 로그인
     @action(methods=["POST"], detail=False, url_path="login")
     def login(self, request):
         input_serializer = LoginInputSerializer(data=request.data)
@@ -92,4 +96,11 @@ class UserViewSet(ModelViewSet):
 
         login(request, user)
 
+        return Response(status=status.HTTP_200_OK)
+
+    # POST /api/account/users/logout
+    # 로그아웃
+    @action(methods=["POST"], detail=False, url_path="logout")
+    def logout(self, request):
+        logout(request)
         return Response(status=status.HTTP_200_OK)
