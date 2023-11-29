@@ -1,10 +1,11 @@
 import pytest
 
 from apps.account.models import User
+from django.test.client import Client
 
 
 @pytest.mark.django_db
-def test_create_user_view(client):
+def test_create_user_view(client: Client):
     """
     유저 생성 (회원가입) API 정상 케이스
     """
@@ -25,3 +26,34 @@ def test_create_user_view(client):
     user_id = response_json["id"]
 
     assert User.objects.filter(id=user_id).exists()
+
+
+@pytest.mark.django_db
+def test_login_active_user(client: Client):
+    active_user = User.objects.create_user(username='username', password='password', is_active=True)
+
+    payload = {
+        "username": active_user.username,
+        "password": "password",
+    }
+
+    response = client.post("/api/users/login", content_type="application/json", data=payload)
+
+    assert response.status_code == 200
+    assert 'sessionid' in response.cookies
+
+
+@pytest.mark.django_db
+def test_login_inactive_user(client: Client):
+    active_user = User.objects.create_user(username='username', password='password', is_active=False)
+
+    payload = {
+        "username": active_user.username,
+        "password": "password",
+    }
+
+    response = client.post("/api/users/login", content_type="application/json", data=payload)
+
+    assert response.status_code == 400
+    assert 'sessionid' not in response.cookies
+

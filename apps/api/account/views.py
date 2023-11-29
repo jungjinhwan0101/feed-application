@@ -1,10 +1,12 @@
+from django.contrib.auth import authenticate, login
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from apps.account.models import User
-from apps.api.account.serializers import UserSerializer, SignupApproveInputSerializer, RefreshConfirmCodeInputSerializer
+from apps.api.account.serializers import UserSerializer, SignupApproveInputSerializer, \
+    RefreshConfirmCodeInputSerializer, LoginInputSerializer
 from apps.account.services import AccountService
 
 
@@ -71,5 +73,23 @@ class UserViewSet(ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST, data={'message': '비밀번호가 일치하지 않습니다.'})
 
         AccountService.publish_confirm_code(user)
+
+        return Response(status=status.HTTP_200_OK)
+
+    # POST /api/users/login
+    @action(methods=["POST"], detail=False, url_path="login")
+    def login(self, request):
+        input_serializer = LoginInputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+
+        username = input_serializer.validated_data['username']
+        password = input_serializer.validated_data['password']
+
+        user: User | None = authenticate(request, username=username, password=password)
+
+        if user is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={'message': '로그인에 실패했습니다.'})
+
+        login(request, user)
 
         return Response(status=status.HTTP_200_OK)

@@ -40,3 +40,8 @@ class SignupApproveInputSerializer(serializers.Serializer):
 class RefreshConfirmCodeInputSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
+
+
+class LoginInputSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
